@@ -1,10 +1,17 @@
-/* cmd_handler.c */
+/*!
+ * @file cmd-handler.c
+ * @brief 명령 분배 처리 및 핸들러 등록 구현 파일
+ * @details 등록된 명령 ID와 핸들러 목록을 기반으로 요청 명령을 처리하고 응답을 생성합니다.
+ */
+
 #include "cmd-handler.h"
 #include "command.h"
 #include <stdio.h>
 #include <string.h>
 
-// 명령 테이블
+/**
+ * @brief 명령 ID와 해당 핸들러 함수 매핑 테이블
+ */
 static cmd_handler_t handlers[] = {
     { CMD_KEEP_ALIVE,               "KEEP ALIVE",               keepAlive },
     { CMD_IBIT,                     "IBIT",                     iBit },
@@ -50,9 +57,17 @@ static cmd_handler_t handlers[] = {
     { UDS4_COMMAND,             "COMMAND",              recvCommandData },
     { CMD_UNKNOWN,                  "UNKOWN COMMAND",           unknownCommand }
 };
-        
+
+/**
+ * @brief 핸들러의 총 개수
+ */
 static const int iNumOfHandlers = sizeof(handlers) / sizeof(handlers[0]);
 
+/**
+ * @brief 요청 명령 ID에 따라 요청 데이터의 크기를 반환합니다.
+ * @param id 명령 ID
+ * @return 요청 데이터 크기 (바이트)
+ */
 int getReqestCmdSize(cmd_id_t id)
 {
     switch (id) {
@@ -101,6 +116,11 @@ int getReqestCmdSize(cmd_id_t id)
     }
 }
 
+/**
+ * @brief 응답 명령 ID에 따라 응답 데이터의 크기를 반환합니다.
+ * @param id 명령 ID
+ * @return 응답 데이터 크기 (바이트)
+ */
 int getResponseCmdSize(cmd_id_t id)
 {
     switch (id) {
@@ -151,6 +171,11 @@ int getResponseCmdSize(cmd_id_t id)
     }
 }
 
+/**
+ * @brief 명령 ID에 해당하는 문자열 이름을 반환합니다.
+ * @param id 명령 ID
+ * @return 명령 이름 문자열
+ */
 const char* getCmdName(cmd_id_t id) 
 {
     switch (id) {
@@ -200,8 +225,16 @@ const char* getCmdName(cmd_id_t id)
 }
 
 
-// 명령 분배 처리
-int dispatchCommand(int iCmdId, const char* pchRequest, char* pchResponse, void* pvUdsInfo, logger_func_t logger) {
+/**
+ * @brief 명령 ID를 기준으로 핸들러를 찾아 명령을 처리하고 응답을 생성합니다.
+ * @param iCmdId 명령 ID
+ * @param pchRequest 요청 데이터 포인터
+ * @param pchResponse 응답 버퍼 포인터
+ * @param pvUdsInfo UDS 관련 정보 포인터
+ * @param logger 로깅 함수 포인터 (NULL 가능)
+ * @return 처리 결과 (CMD_SUCCESS 또는 CMD_FAILURE)
+ */
+int dispatchCommand(int iCmdId, char* pchRequest, char* pchResponse, void* pvUdsInfo, logger_func_t logger) {
     for (int i = 0; i < iNumOfHandlers; ++i) {
         if (handlers[i].cmdId == iCmdId) {
             if (logger) logger(handlers[i].cmdId, "Start");            

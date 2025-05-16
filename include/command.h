@@ -299,7 +299,7 @@ typedef struct __attribute__((__packed__)){
  * @param pchResponse 응답 버퍼 (RES_KEEP_ALIVE 구조체 형태)
  * @return CMD_SUCCESS (정상)
  */
-int keepAlive(const char* pchRequest, char* response, void* pvData);
+int keepAlive(char* pchRequest, char* response, void* pvData);
 
 /**
  * @brief iBIT 응답 메시지를 생성합니다.
@@ -308,7 +308,7 @@ int keepAlive(const char* pchRequest, char* response, void* pvData);
  * @param pchResponse 응답 버퍼 (RES_IBIT 구조체 형태)
  * @return CMD_SUCCESS (정상)
  */
-int iBit(const char* pchRequest, char* response, void* pvData);
+int iBit(char* pchRequest, char* response, void* pvData);
 
 /**
  * @brief rBIT 응답 메시지를 생성합니다.
@@ -317,7 +317,7 @@ int iBit(const char* pchRequest, char* response, void* pvData);
  * @param pchResponse 응답 버퍼 (RES_RBIT 구조체 형태)
  * @return CMD_SUCCESS (정상)
  */
-int rBit(const char* pchRequest, char* response, void* pvData);
+int rBit(char* pchRequest, char* response, void* pvData);
 
 /**
  * @brief cBIT 요청을 처리하고 응답 메시지를 생성합니다.
@@ -326,35 +326,35 @@ int rBit(const char* pchRequest, char* response, void* pvData);
  * @param pchResponse 응답 버퍼 (RES_CBIT 구조체)
  * @return CMD_SUCCESS (정상)
  */
-int cBit(const char* pchRequest, char* response, void* pvData);
+int cBit(char* pchRequest, char* response, void* pvData);
 
 //todo 
-int positionAzElSet(const char* pchRequest, char* response, void* pvData);
-int trackingModeSelect(const char* pchRequest, char* response, void* pvData);
-int trackingStartMode(const char* pchRequest, char* response, void* pvData);
-int trajectoryInfo(const char* pchRequest, char* response, void* pvData);
-int shelterCoordinate(const char* pchRequest, char* response, void* pvData);
-int externDevCoordinate(const char* pchRequest, char* response, void* pvData);
-int cannonCoordinate(const char* pchRequest, char* response, void* pvData);
-int trackingStartStop(const char* pchRequest, char* response, void* pvData);
-int positionDegSend(const char* pchRequest, char* response, void* pvData);
-int acuModeSelect(const char* pchRequest, char* response, void* pvData);
-int timeSyncCheck(const char* pchRequest, char* response, void* pvData);
-int timeSyncSet(const char* pchRequest, char* response, void* pvData);
-int positionAzElOffset(const char* pchRequest, char* response, void* pvData);
-int externDevIpSet(const char* pchRequest, char* response, void* pvData);
-int sendAcuData(const char* pchRequest, char* response, void* pvData);
-int fpgaTimeSet(const char* pchRequest, char* response, void* pvData);
-int fpgaTimeSyncCheck(const char* pchRequest, char* response, void* pvData);
-int preProgramStartPoint(const char* pchRequest, char* response, void* pvData);
-int elCalibrationSet(const char* pchRequest, char* response, void* pvData);
-int trueNorthOffset(const char* pchRequest, char* response, void* pvData);
-int kalmanFilterInfo(const char* pchRequest, char* response, void* pvData);
-int gpsAltitudeOffset(const char* pchRequest, char* response, void* pvData);
-int externParamSet(const char* pchRequest, char* response, void* pvData);
-int imuOffset(const char* pchRequest, char* response, void* pvData);
-int targetLla(const char* pchRequest, char* response, void* pvData);
-int unknownCommand(const char* pchRequest, char* response, void* pvData);
+int positionAzElSet(char* pchRequest, char* response, void* pvData);
+int trackingModeSelect(char* pchRequest, char* response, void* pvData);
+int trackingStartMode(char* pchRequest, char* response, void* pvData);
+int trajectoryInfo(char* pchRequest, char* response, void* pvData);
+int shelterCoordinate(char* pchRequest, char* response, void* pvData);
+int externDevCoordinate(char* pchRequest, char* response, void* pvData);
+int cannonCoordinate(char* pchRequest, char* response, void* pvData);
+int trackingStartStop(char* pchRequest, char* response, void* pvData);
+int positionDegSend(char* pchRequest, char* response, void* pvData);
+int acuModeSelect(char* pchRequest, char* response, void* pvData);
+int timeSyncCheck(char* pchRequest, char* response, void* pvData);
+int timeSyncSet(char* pchRequest, char* response, void* pvData);
+int positionAzElOffset(char* pchRequest, char* response, void* pvData);
+int externDevIpSet(char* pchRequest, char* response, void* pvData);
+int sendAcuData(char* pchRequest, char* response, void* pvData);
+int fpgaTimeSet(char* pchRequest, char* response, void* pvData);
+int fpgaTimeSyncCheck(char* pchRequest, char* response, void* pvData);
+int preProgramStartPoint(char* pchRequest, char* response, void* pvData);
+int elCalibrationSet(char* pchRequest, char* response, void* pvData);
+int trueNorthOffset(char* pchRequest, char* response, void* pvData);
+int kalmanFilterInfo(char* pchRequest, char* response, void* pvData);
+int gpsAltitudeOffset(char* pchRequest, char* response, void* pvData);
+int externParamSet(char* pchRequest, char* response, void* pvData);
+int imuOffset(char* pchRequest, char* response, void* pvData);
+int targetLla(char* pchRequest, char* response, void* pvData);
+int unknownCommand(char* pchRequest, char* response, void* pvData);
 
 /* UDS */
 typedef struct __attribute__((__packed__)){	
@@ -431,17 +431,17 @@ typedef struct __attribute__((__packed__)){
  * @param pchResponse 응답 버퍼 (SENSOR_DATA에 저장됨)
  * @return CMD_SUCCESS (정상)
  */
-int responseUdsId(const char* pchRequest, char* pchResponse, void* pvData);
-int recvGpsData(const char* pchRequest, char* pchResponse, void* pvData);
-int recvImuData(const char* pchRequest, char* pchResponse, void* pvData);
-int recvSpData(const char* pchRequest, char* pchResponse, void* pvData);
-int recvExternData(const char* pchRequest, char* pchResponse, void* pvData);
-int recvKeyboardData(const char* pchRequest, char* pchResponse, void* pvData);
-int recvProcessingData(const char* pchRequest, char* pchResponse, void* pvData);
-int recvControllData(const char* pchRequest, char* pchResponse, void* pvData);
-int recvCommandData(const char* pchRequest, char* pchResponse, void* pvData);
+int responseUdsId(char* pchRequest, char* pchResponse, void* pvData);
+int recvGpsData(char* pchRequest, char* pchResponse, void* pvData);
+int recvImuData(char* pchRequest, char* pchResponse, void* pvData);
+int recvSpData(char* pchRequest, char* pchResponse, void* pvData);
+int recvExternData(char* pchRequest, char* pchResponse, void* pvData);
+int recvKeyboardData(char* pchRequest, char* pchResponse, void* pvData);
+int recvProcessingData(char* pchRequest, char* pchResponse, void* pvData);
+int recvControllData(char* pchRequest, char* pchResponse, void* pvData);
+int recvCommandData(char* pchRequest, char* pchResponse, void* pvData);
 
-int udsTrackingMode(const char* pchRequest, char* pchResponse, void* pvData);
+int udsTrackingMode(char* pchRequest, char* pchResponse, void* pvData);
 
 typedef struct __attribute__((__packed__)){
 	GPS_DATA stGpsData;

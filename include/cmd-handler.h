@@ -1,3 +1,7 @@
+/*!
+ * @file cmd-handler.h
+ * @brief 명령 처리 관련 정의 및 함수 선언 헤더
+ */
 #ifndef CMD_HANDLER_H
 #define CMD_HANDLER_H
 
@@ -7,7 +11,10 @@ extern "C" {
 
 #include "logger.h"
 
-// 명령 ID 정의
+/**
+ * @enum cmd_id_t
+ * @brief 명령 ID 정의
+ */
 typedef enum {
     CMD_KEEP_ALIVE = 0,
     CMD_IBIT,
@@ -64,7 +71,7 @@ typedef enum {
 } cmd_id_t;
 
 // 핸들러 함수 타입
-typedef int (*command_func_t)(const char* pchRequest, char* pchResponse, void* pvUdsInfo);
+typedef int (*command_func_t)(char* pchRequest, char* pchResponse, void* pvUdsInfo);
 
 // 로그 함수 타입
 typedef void (*logger_func_t)(int iCmdId, const char* pchStatus);
@@ -74,7 +81,7 @@ int getReqestCmdSize(cmd_id_t id);
 int getResponseCmdSize(cmd_id_t id);
 
 // 명령 처리 함수 (로그 포함)
-int dispatchCommand(int iCmdId, const char* pchRequest, char* pchResponse, void* pvUdsInfo, logger_func_t logger);
+int dispatchCommand(int iCmdId, char* pchRequest, char* pchResponse, void* pvUdsInfo, logger_func_t logger);
 
 
 // 명령 핸들러 구조체

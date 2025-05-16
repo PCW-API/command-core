@@ -1,3 +1,8 @@
+/*!
+ * @file command.c
+ * @brief 각 명령 ID에 대응하는 처리 함수 정의
+ * @details ACU 제어 명령, 센서 데이터 처리 등 다양한 요청 명령에 대한 응답 데이터를 구성합니다.
+ */
 #include <stdio.h>
 #include <string.h>
 #include "command.h"
@@ -5,15 +10,23 @@
 #include "frame-format.h"
 #include "cmd-handler.h"
 #include "uds-info.h"
+#include "queue.h"
 
-int keepAlive(const char* pchRequest, char* pchResponse, void* pvData)
+/**
+ * @brief KeepAlive 요청에 대한 응답을 처리합니다.
+ * @return CMD_SUCCESS
+ */
+int keepAlive(char* pchRequest, char* pchResponse, void* pvData)
 {
     RES_KEEP_ALIVE* pstResKeepAlive = (RES_KEEP_ALIVE *)pchResponse;
     pstResKeepAlive->chResult = 0x01;
     return CMD_SUCCESS;
 }
 
-int iBit(const char* pchRequest, char* pchResponse, void* pvData)
+/**
+ * @brief IBIT 요청을 처리하고 응답을 생성합니다.
+ */
+int iBit(char* pchRequest, char* pchResponse, void* pvData)
 {
     RES_IBIT* pstResIBit = (RES_IBIT *)pchResponse;
     pstResIBit->chBitTotResult = 0x01;
@@ -21,7 +34,7 @@ int iBit(const char* pchRequest, char* pchResponse, void* pvData)
     return CMD_SUCCESS;
 }
 
-int rBit(const char* pchRequest, char* pchResponse, void* pvData)
+int rBit(char* pchRequest, char* pchResponse, void* pvData)
 {
     RES_RBIT* pstResRBit = (RES_RBIT *)pchResponse;
     pstResRBit->chBitTotResult = 0x01;
@@ -29,7 +42,7 @@ int rBit(const char* pchRequest, char* pchResponse, void* pvData)
     return CMD_SUCCESS;
 }
 
-int cBit(const char* pchRequest, char* pchResponse, void* pvData)
+int cBit(char* pchRequest, char* pchResponse, void* pvData)
 {
     RES_CBIT* pstResCBit = (RES_CBIT *)pchResponse;    
     pstResCBit->chBitTotResult = 0x01;
@@ -38,7 +51,7 @@ int cBit(const char* pchRequest, char* pchResponse, void* pvData)
 }
 
 
-int positionAzElSet(const char* pchRequest, char* pchResponse, void* pvData)
+int positionAzElSet(char* pchRequest, char* pchResponse, void* pvData)
 {
     RES_POSITION_AZ_EL_SET* pstResPositionAzElSet = (RES_POSITION_AZ_EL_SET *)pchResponse;
     
@@ -48,7 +61,7 @@ int positionAzElSet(const char* pchRequest, char* pchResponse, void* pvData)
     return CMD_SUCCESS;
 }
 
-int trackingModeSelect(const char* pchRequest, char* pchResponse, void* pvData)
+int trackingModeSelect(char* pchRequest, char* pchResponse, void* pvData)
 {
     REQ_TRACKING_MODE_SELECT* pstReqTrackingModeSelect = (REQ_TRACKING_MODE_SELECT *)pchRequest;
     RES_TRACKING_MODE_SELECT* pstResTrackingModeSelect = (RES_TRACKING_MODE_SELECT *)pchResponse;
@@ -58,7 +71,7 @@ int trackingModeSelect(const char* pchRequest, char* pchResponse, void* pvData)
     return CMD_SUCCESS;
 }
 
-int trackingStartMode(const char* pchRequest, char* pchResponse, void* pvData)
+int trackingStartMode(char* pchRequest, char* pchResponse, void* pvData)
 {
     REQ_TRACKING_START_MODE* pstReqTrackingStartMode = (REQ_TRACKING_START_MODE *)pchRequest;
     RES_TRACKING_START_MODE* pstResTrackingStartMode = (RES_TRACKING_START_MODE *)pchResponse;
@@ -67,7 +80,7 @@ int trackingStartMode(const char* pchRequest, char* pchResponse, void* pvData)
     return CMD_SUCCESS;
 }
 
-int trajectoryInfo(const char* pchRequest, char* pchResponse, void* pvData)
+int trajectoryInfo(char* pchRequest, char* pchResponse, void* pvData)
 {
     //도플러에서 사용 안함
     // REQ_TRAJECTORY_INFO* pstReqTrajectoryInfo = (REQ_TRAJECTORY_INFO *)pchRequest;
@@ -76,7 +89,7 @@ int trajectoryInfo(const char* pchRequest, char* pchResponse, void* pvData)
     return CMD_SUCCESS;
 }
 
-int shelterCoordinate(const char* pchRequest, char* pchResponse, void* pvData)
+int shelterCoordinate(char* pchRequest, char* pchResponse, void* pvData)
 {
     //도플러에서 사용 안함
     // REQ_SHELTER_COORDINATE* pstReqShelterCoordinate = (REQ_SHELTER_COORDINATE *)pchRequest;
@@ -85,7 +98,7 @@ int shelterCoordinate(const char* pchRequest, char* pchResponse, void* pvData)
     return CMD_SUCCESS;
 }
 
-int externDevCoordinate(const char* pchRequest, char* pchResponse, void* pvData)
+int externDevCoordinate(char* pchRequest, char* pchResponse, void* pvData)
 {
     //도플러에서 사용 안함
     // REQ_EXTERN_DEV_COORDINATE* pstReqExternDevCoordinate = (REQ_EXTERN_DEV_COORDINATE *)pchRequest;
@@ -94,7 +107,7 @@ int externDevCoordinate(const char* pchRequest, char* pchResponse, void* pvData)
     return CMD_SUCCESS;
 }
 
-int cannonCoordinate(const char* pchRequest, char* pchResponse, void* pvData)
+int cannonCoordinate(char* pchRequest, char* pchResponse, void* pvData)
 {
     //도플러에서 사용 안함
     // REQ_CANNON_COORDINATE* pstReqCannonCoordinate = (REQ_CANNON_COORDINATE *)pchRequest;
@@ -103,7 +116,7 @@ int cannonCoordinate(const char* pchRequest, char* pchResponse, void* pvData)
     return CMD_SUCCESS;
 }
 
-int trackingStartStop(const char* pchRequest, char* pchResponse, void* pvData)
+int trackingStartStop(char* pchRequest, char* pchResponse, void* pvData)
 {
     REQ_TRACKING_START_STOP* pstReqTrackingStartStop = (REQ_TRACKING_START_STOP *)pchRequest;
     RES_TRACKING_START_STOP* pstResTrackingStartStop = (RES_TRACKING_START_STOP *)pchResponse;
@@ -112,7 +125,7 @@ int trackingStartStop(const char* pchRequest, char* pchResponse, void* pvData)
     return CMD_SUCCESS;
 }
 
-int positionDegSend(const char* pchRequest, char* pchResponse, void* pvData)
+int positionDegSend(char* pchRequest, char* pchResponse, void* pvData)
 {
     REQ_POSITION_DEG_SEND* pstReqPositionDegSend = (REQ_POSITION_DEG_SEND *)pchRequest;
     RES_POSITION_DEG_SEND* pstResPositionDegSend = (RES_POSITION_DEG_SEND *)pchResponse;
@@ -121,7 +134,7 @@ int positionDegSend(const char* pchRequest, char* pchResponse, void* pvData)
     return CMD_SUCCESS;
 }
 
-int acuModeSelect(const char* pchRequest, char* pchResponse, void* pvData)
+int acuModeSelect(char* pchRequest, char* pchResponse, void* pvData)
 {
     REQ_ACU_MODE_SELECT* pstReqAcuModeSelect = (REQ_ACU_MODE_SELECT *)pchRequest;
     RES_ACU_MODE_SELECT* pstResAcuModeSelect = (RES_ACU_MODE_SELECT *)pchResponse;
@@ -129,7 +142,7 @@ int acuModeSelect(const char* pchRequest, char* pchResponse, void* pvData)
     pstResAcuModeSelect->chResult = 0x01;
     return CMD_SUCCESS;
 }
-int timeSyncCheck(const char* pchRequest, char* pchResponse, void* pvData)
+int timeSyncCheck(char* pchRequest, char* pchResponse, void* pvData)
 {
     REQ_TIME_SYNC_CHECK* pstReqTimeSyncCheck = (REQ_TIME_SYNC_CHECK *)pchRequest;
     RES_TIME_SYNC_CHECK* pstResTimeSyncCheck = (RES_TIME_SYNC_CHECK *)pchResponse;    
@@ -137,7 +150,7 @@ int timeSyncCheck(const char* pchRequest, char* pchResponse, void* pvData)
     return CMD_SUCCESS;
 }
 
-int timeSyncSet(const char* pchRequest, char* pchResponse, void* pvData)
+int timeSyncSet(char* pchRequest, char* pchResponse, void* pvData)
 {
     REQ_TIME_SYNC_SET* pstReqTimeSyncSet = (REQ_TIME_SYNC_SET *)pchRequest;
     RES_TIME_SYNC_SET* pstResTimeSyncSet = (RES_TIME_SYNC_SET *)pchResponse;    
@@ -145,7 +158,7 @@ int timeSyncSet(const char* pchRequest, char* pchResponse, void* pvData)
     // pstResTimeSyncSet->chResult = 0x01;
     return CMD_SUCCESS;
 }
-int positionAzElOffset(const char* pchRequest, char* pchResponse, void* pvData)
+int positionAzElOffset(char* pchRequest, char* pchResponse, void* pvData)
 {
     REQ_POSITION_AZ_EL_OFFSET* pstReqPositionAzElOffset = (REQ_POSITION_AZ_EL_OFFSET *)pchRequest;
     RES_POSITION_AZ_EL_OFFSET* pstResPositionAzElOffset = (RES_POSITION_AZ_EL_OFFSET *)pchResponse;
@@ -154,7 +167,7 @@ int positionAzElOffset(const char* pchRequest, char* pchResponse, void* pvData)
     return CMD_SUCCESS;
 }
 
-int externDevIpSet(const char* pchRequest, char* pchResponse, void* pvData)
+int externDevIpSet(char* pchRequest, char* pchResponse, void* pvData)
 {
     REQ_EXTERN_DEV_IP_SET* pstReqExternDevIpSet = (REQ_EXTERN_DEV_IP_SET *)pchRequest;
     RES_EXTERN_DEV_IP_SET* pstResExternDevIpSet = (RES_EXTERN_DEV_IP_SET *)pchResponse;
@@ -163,21 +176,21 @@ int externDevIpSet(const char* pchRequest, char* pchResponse, void* pvData)
     return CMD_SUCCESS;
 }
 
-int sendAcuData(const char* pchRequest, char* pchResponse, void* pvData)
+int sendAcuData(char* pchRequest, char* pchResponse, void* pvData)
 {
     //도플러에서 사용 안함
     // REQ_SEND_ACU_DATA* pstReqSendAcuData = (REQ_SEND_ACU_DATA *)pchRequest;
     // RES_SEND_ACU_DATA* pstResSendAcuData = (RES_SEND_ACU_DATA *)pchResponse;
     return CMD_SUCCESS;
 }
-int fpgaTimeSet(const char* pchRequest, char* pchResponse, void* pvData)
+int fpgaTimeSet(char* pchRequest, char* pchResponse, void* pvData)
 {
     REQ_FPGA_TIME_SET* pstReqFpgaTimeSet = (REQ_FPGA_TIME_SET *)pchRequest;
     RES_FPGA_TIME_SET* pstResFpgaTimeSet = (RES_FPGA_TIME_SET *)pchResponse;    
     pstResFpgaTimeSet->chResult = 0x01;
     return CMD_SUCCESS;
 }
-int fpgaTimeSyncCheck(const char* pchRequest, char* pchResponse, void* pvData)
+int fpgaTimeSyncCheck(char* pchRequest, char* pchResponse, void* pvData)
 {
     REQ_FPGA_TIME_SYNC_CHECK* pstReqFpgaTimeSyncCheck = (REQ_FPGA_TIME_SYNC_CHECK *)pchRequest;
     RES_FPGA_TIME_SYNC_CHECK* pstResFpgaTimeSyncCheck = (RES_FPGA_TIME_SYNC_CHECK *)pchResponse;
@@ -185,7 +198,7 @@ int fpgaTimeSyncCheck(const char* pchRequest, char* pchResponse, void* pvData)
     return CMD_SUCCESS;
 }
 
-int preProgramStartPoint(const char* pchRequest, char* pchResponse, void* pvData)
+int preProgramStartPoint(char* pchRequest, char* pchResponse, void* pvData)
 {
     //도플러에서 사용 안함
     // REQ_PRE_PROGRAM_START_POINT* pstReqPreProgramStartPoint = (REQ_PRE_PROGRAM_START_POINT *)pchRequest;
@@ -193,7 +206,7 @@ int preProgramStartPoint(const char* pchRequest, char* pchResponse, void* pvData
     // pstResPreProgramStartPoint->chResult = 0x01;
     return CMD_SUCCESS;
 }
-int elCalibrationSet(const char* pchRequest, char* pchResponse, void* pvData)
+int elCalibrationSet(char* pchRequest, char* pchResponse, void* pvData)
 {
     REQ_EL_CALIBRATION_SET* pstReqElCalibrationSet = (REQ_EL_CALIBRATION_SET *)pchRequest;
     RES_EL_CALIBRATION_SET* pstResElCalibrationSet = (RES_EL_CALIBRATION_SET *)pchResponse;
@@ -201,7 +214,7 @@ int elCalibrationSet(const char* pchRequest, char* pchResponse, void* pvData)
     pstResElCalibrationSet->chResult = 0x01;
     return CMD_SUCCESS;
 }
-int trueNorthOffset(const char* pchRequest, char* pchResponse, void* pvData)
+int trueNorthOffset(char* pchRequest, char* pchResponse, void* pvData)
 {
     REQ_TRUE_NORTH_OFFSET* pstReqTrueNorthOffset = (REQ_TRUE_NORTH_OFFSET *)pchRequest;
     RES_TRUE_NORTH_OFFSET* pstResTrueNorthOffset = (RES_TRUE_NORTH_OFFSET *)pchResponse; 
@@ -209,23 +222,36 @@ int trueNorthOffset(const char* pchRequest, char* pchResponse, void* pvData)
     pstResTrueNorthOffset->chResult = 0x01;
     return CMD_SUCCESS;
 }
-int kalmanFilterInfo(const char* pchRequest, char* pchResponse, void* pvData)
+int kalmanFilterInfo(char* pchRequest, char* pchResponse, void* pvData)
 {
     REQ_KALMAN_FILTER_INFO* pstReqKalmanFilterInfo = (REQ_KALMAN_FILTER_INFO *)pchRequest;
     RES_KALMAN_FILTER_INFO* pstResKalmanFilterInfo = (RES_KALMAN_FILTER_INFO *)pchResponse;    
     pstResKalmanFilterInfo->chResult = 0x01;
     return CMD_SUCCESS;
 }
-int gpsAltitudeOffset(const char* pchRequest, char* pchResponse, void* pvData)
+int gpsAltitudeOffset(char* pchRequest, char* pchResponse, void* pvData)
 {
+    UDS_SERVER* pstUds1Server = (UDS_SERVER *)pvData;
+    int iUdsIndex;
     int iUdsSendSize = sizeof(FRAME_HEADER)+sizeof(FRAME_TAIL)+getReqestCmdSize(CMD_GPS_ALTITUDE_OFFSET);
     RES_GPS_ALTITUDE_OFFSET* pstResGpsAltitudeOffset = (RES_GPS_ALTITUDE_OFFSET *)pchResponse;
+    for(int i=0; i<pstUds1Server->iClientCount; i++){
+        fprintf(stderr,"### %s():%d index is %d %d ###\n",__func__,__LINE__, pstUds1Server->pstClients[i].iId, UDS1_GPS_ID);
+        if(pstUds1Server->pstClients[i].iId == UDS1_GPS_ID){
+            iUdsIndex = i;
+            queuePush(&pstUds1Server->pstClients[i].stSendQueue, pchRequest, iUdsSendSize);
+            // break;
+        }
+    }
+    fprintf(stderr,"### %s():%d index is %d ###\n",__func__,__LINE__,iUdsIndex);
+
     //todo Gps Uart Recver에 명령 전송
     // pstResGpsAltitudeOffset->chResult = udsSendToClient((UDS_SERVER *)pvData, GPS_ID, pchRequest, iUdsSendSize);
+    pstResGpsAltitudeOffset->chResult = 0x01;
     return CMD_SUCCESS;
 }
 
-int externParamSet(const char* pchRequest, char* pchResponse, void* pvData)
+int externParamSet(char* pchRequest, char* pchResponse, void* pvData)
 {
     REQ_EXTERN_PARAM_SET* pstReqExternParamSet = (REQ_EXTERN_PARAM_SET *)pchRequest;
     RES_EXTERN_PARAM_SET* pstResExternParamSet = (RES_EXTERN_PARAM_SET *)pchResponse;
@@ -233,14 +259,14 @@ int externParamSet(const char* pchRequest, char* pchResponse, void* pvData)
     pstResExternParamSet->chResult = 0x01;
     return CMD_SUCCESS;
 }
-int imuOffset(const char* pchRequest, char* pchResponse, void* pvData)
+int imuOffset(char* pchRequest, char* pchResponse, void* pvData)
 {
     REQ_IMU_OFFSET* pstReqImuOffset = (REQ_IMU_OFFSET *)pchRequest;
     RES_IMU_OFFSET* pstResImuOffset = (RES_IMU_OFFSET *)pchResponse;
     pstResImuOffset->chResult = 0x01;
     return CMD_SUCCESS;
 }
-int targetLla(const char* pchRequest, char* pchResponse, void* pvData)
+int targetLla(char* pchRequest, char* pchResponse, void* pvData)
 {
     REQ_TARGET_LLA* pstReqTargetLla = (REQ_TARGET_LLA *)pchRequest;
     RES_TARGET_LLA* pstResTargetLla = (RES_TARGET_LLA *)pchResponse;
@@ -250,7 +276,7 @@ int targetLla(const char* pchRequest, char* pchResponse, void* pvData)
 
 
 /* UDS */
-int responseUdsId(const char* pchRequest, char* pchResponse, void* pvData)
+int responseUdsId(char* pchRequest, char* pchResponse, void* pvData)
 {
     FRAME_HEADER* pstFrameHeader  = (FRAME_HEADER *)pchRequest;
     REQ_UDS_ID* pstReqUdsId = (REQ_UDS_ID *)pchRequest;
@@ -262,7 +288,7 @@ int responseUdsId(const char* pchRequest, char* pchResponse, void* pvData)
 
 
 
-int recvGpsData(const char* pchRequest, char* pchResponse, void* pvData)
+int recvGpsData(char* pchRequest, char* pchResponse, void* pvData)
 {
     GPS_DATA* pstGpsData = (GPS_DATA *)pchRequest + sizeof(FRAME_HEADER);
     SENSOR_DATA* pstSensorData = (SENSOR_DATA *)pchResponse;
@@ -272,7 +298,7 @@ int recvGpsData(const char* pchRequest, char* pchResponse, void* pvData)
     return CMD_SUCCESS;
 }
 
-int recvImuData(const char* pchRequest, char* pchResponse, void* pvData)
+int recvImuData(char* pchRequest, char* pchResponse, void* pvData)
 {
     IMU_DATA* pstImuData = (IMU_DATA *)pchRequest + sizeof(FRAME_HEADER);
     SENSOR_DATA* pstSensorData = (SENSOR_DATA *)pchResponse;
@@ -282,7 +308,7 @@ int recvImuData(const char* pchRequest, char* pchResponse, void* pvData)
     return CMD_SUCCESS;
 }
 
-int recvSpData(const char* pchRequest, char* pchResponse, void* pvData)
+int recvSpData(char* pchRequest, char* pchResponse, void* pvData)
 {
     SP_DATA* pstSpData = (SP_DATA *)pchRequest + sizeof(FRAME_HEADER);
     SENSOR_DATA* pstSensorData = (SENSOR_DATA *)pchResponse;
@@ -291,7 +317,7 @@ int recvSpData(const char* pchRequest, char* pchResponse, void* pvData)
     return CMD_SUCCESS;
 }
 
-int recvExternData(const char* pchRequest, char* pchResponse, void* pvData)
+int recvExternData(char* pchRequest, char* pchResponse, void* pvData)
 {
     EXTERN_DATA* pstExternData = (EXTERN_DATA *)(pchRequest + sizeof(FRAME_HEADER));
     SENSOR_DATA* pstSensorData = (SENSOR_DATA *)pchResponse;    
@@ -303,7 +329,7 @@ int recvExternData(const char* pchRequest, char* pchResponse, void* pvData)
     return CMD_SUCCESS;
 }
 
-int recvKeyboardData(const char* pchRequest, char* pchResponse, void* pvData)
+int recvKeyboardData(char* pchRequest, char* pchResponse, void* pvData)
 {
     KEYBOARD_DATA* pstKeyboardData = (KEYBOARD_DATA *)pchRequest + sizeof(FRAME_HEADER);
     SENSOR_DATA* pstSensorData = (SENSOR_DATA *)pchResponse;
@@ -312,18 +338,18 @@ int recvKeyboardData(const char* pchRequest, char* pchResponse, void* pvData)
     return CMD_SUCCESS;
 }
 
-int recvProcessingData(const char* pchRequest, char* pchResponse, void* pvData)
+int recvProcessingData(char* pchRequest, char* pchResponse, void* pvData)
 {
     return CMD_SUCCESS;
 }
 
-int recvControllData(const char* pchRequest, char* pchResponse, void* pvData)
+int recvControllData(char* pchRequest, char* pchResponse, void* pvData)
 {
     RES_CONTROLL_DATA* pstReqControllData = (RES_CONTROLL_DATA *)pchRequest;
     return CMD_SUCCESS;
 }
 
-int recvCommandData(const char* pchRequest, char* pchResponse, void* pvData)
+int recvCommandData(char* pchRequest, char* pchResponse, void* pvData)
 {
     RES_COMMAND_DATA* pstReqCommandData = (RES_COMMAND_DATA *)pchRequest;
     return CMD_SUCCESS;
@@ -331,7 +357,7 @@ int recvCommandData(const char* pchRequest, char* pchResponse, void* pvData)
 
 
 
-int udsTrackingMode(const char* pchRequest, char* pchResponse, void* pvData)
+int udsTrackingMode(char* pchRequest, char* pchResponse, void* pvData)
 {
     REQ_TRACKING_MODE_SELECT* pstReqTrackingModeSelect = (REQ_TRACKING_MODE_SELECT *)pchRequest;
     RES_TRACKING_MODE_SELECT* pstResTrackingModeSelect = (RES_TRACKING_MODE_SELECT *)pchResponse;
@@ -340,7 +366,7 @@ int udsTrackingMode(const char* pchRequest, char* pchResponse, void* pvData)
 }
 
 
-int unknownCommand(const char* pchRequest, char* pchResponse, void* pvData)
+int unknownCommand(char* pchRequest, char* pchResponse, void* pvData)
 {
     RES_UNKNOWN_COMMAND* pstResUnknownCommand = (RES_UNKNOWN_COMMAND *)pchResponse;
     pstResUnknownCommand->chResult = 0x00;

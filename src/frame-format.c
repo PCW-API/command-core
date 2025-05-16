@@ -1,13 +1,17 @@
+/*!
+ * @file frame-format.c
+ * @brief 패킷 포맷 처리 구현 파일
+ * @details CRC 계산, 요청/응답 패킷 생성, 포맷 검증 등의 기능을 제공합니다.
+ */
 #include "frame-format.h"
 #include "cmd-handler.h"
 #include <stdio.h>
 
 /**
  * @brief 패킷의 CRC 값을 계산합니다.
- *
- * @param pchData CRC를 계산할 데이터 버퍼
- * @param iSize 데이터의 총 크기
- * @return 계산된 CRC 값 (1바이트)
+ * @param pchData 데이터 버퍼
+ * @param iSize 데이터 크기
+ * @return CRC 값
  */
 char calculatePacketCrc(const char* pchData, int iSize)
 {
@@ -22,11 +26,10 @@ char calculatePacketCrc(const char* pchData, int iSize)
 }
 
 /**
- * @brief 패킷의 CRC를 확인하여 유효성을 검사합니다.
- *
- * @param pchData 검사할 데이터 버퍼
- * @param iSize 데이터의 총 크기
- * @return CRC 일치 시 0, 불일치 시 -1 반환
+ * @brief CRC를 검증합니다.
+ * @param pchData 데이터 버퍼
+ * @param iSize 데이터 크기
+ * @return CRC 일치 시 0, 아니면 -1
  */
 int checkPacketCrc(const char* pchData, int iSize)
 {
@@ -38,6 +41,9 @@ int checkPacketCrc(const char* pchData, int iSize)
 	return -1;
 }
 
+/**
+ * @brief 수신 데이터에서 전체 패킷 길이를 계산합니다.
+ */
 int getTotalRecvSize(const char* pchRecvData, int iRecvSize)
 {
     FRAME_HEADER* pstFrameHeader;
