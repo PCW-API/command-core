@@ -4,6 +4,7 @@
  * @details ACU 제어 명령, 센서 데이터 처리 등 다양한 요청 명령에 대한 응답 데이터를 구성합니다.
  */
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "command.h"
 #include "uds-server.h"
@@ -235,12 +236,19 @@ int gpsAltitudeOffset(char* pchRequest, char* pchResponse, void* pvData)
     int iUdsIndex;
     int iUdsSendSize = sizeof(FRAME_HEADER)+sizeof(FRAME_TAIL)+getReqestCmdSize(CMD_GPS_ALTITUDE_OFFSET);
     RES_GPS_ALTITUDE_OFFSET* pstResGpsAltitudeOffset = (RES_GPS_ALTITUDE_OFFSET *)pchResponse;
-    for(int i=0; i<pstUds1Server->iClientCount; i++){
-        fprintf(stderr,"### %s():%d index is %d %d ###\n",__func__,__LINE__, pstUds1Server->pstClients[i].iId, UDS1_GPS_ID);
+    for(int i=0; i<pstUds1Server->iClientCount; i++){        
         if(pstUds1Server->pstClients[i].iId == UDS1_GPS_ID){
+            void* pvData;
+            pvData = malloc(iUdsSendSize);
+            memcpy(pvData, (void*)pchRequest, iUdsSendSize);
             iUdsIndex = i;
-            queuePush(&pstUds1Server->pstClients[i].stSendQueue, pchRequest, iUdsSendSize);
-            // break;
+            queuePush(&pstUds1Server->pstClients[i].stSendQueue, pvData, iUdsSendSize);
+            fprintf(stderr,"### %s():%d UDS SERVER Push Addr:%u ###\n",__func__,__LINE__, pvData);
+            for(int i=0; i<iUdsSendSize; i++){
+                fprintf(stderr,"%02x ", (unsigned char)pchRequest[i]);
+            }
+            fprintf(stderr,"\n");
+            break;
         }
     }
     fprintf(stderr,"### %s():%d index is %d ###\n",__func__,__LINE__,iUdsIndex);
