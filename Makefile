@@ -41,7 +41,7 @@ all: $(TARGET_LIB) symlinks
 
 # 공유 라이브러리 생성
 $(TARGET_LIB): $(SOCKET_OBJS)
-	$(CC) -shared $(LDFLAGS) -Wl,-soname,$(SONAME) -o $@ $^ -luds_desktop
+	$(CC) -shared $(LDFLAGS) -Wl,-soname,$(SONAME) -o $@ $^ -luds
 
 # 심볼릭 링크 생성
 symlinks:
